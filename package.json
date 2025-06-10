@@ -1,8 +1,8 @@
 {
-  "name": "next-firebase-starter",
+  "name": "rare-client",
   "private": true,
   "version": "1.0.0",
-  "author": "Update Name!",
+  "author": "Mike McGee, Tyler Davenport, Omer Akben",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

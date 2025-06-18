@@ -1,16 +1,16 @@
-import clientCredentials from '../../clientCredentials.js';
+const dbUrl = process.env.NEXT_PUBLIC_DATABASE_URL;
 
 const getComments = async (postId) => {
-  const response = await fetch(`${clientCredentials.databaseURL}/comments?postId=${postId}`);
+  const response = await fetch(`${dbUrl.databaseURL}/comments?postId=${postId}`);
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
   const comments = await response.json();
   return comments;
-}
+};
 
 const createComment = async (comment) => {
-  const response = await fetch(`${clientCredentials.databaseURL}/comments`, {
+  const response = await fetch(`${dbUrl.databaseURL}/comments`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -24,10 +24,10 @@ const createComment = async (comment) => {
 
   const newComment = await response.json();
   return newComment;
-}
+};
 
 const updateComment = async (comment, id) => {
-  const response = await fetch(`${clientCredentials.databaseURL}/comments/${id}`, {
+  const response = await fetch(`${dbUrl.databaseURL}/comments/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -41,30 +41,24 @@ const updateComment = async (comment, id) => {
 
   const updatedComment = await response.json();
   return updatedComment;
-}
+};
 
 const getSingleComment = async (id) => {
-  const response = await fetch(`${clientCredentials.databaseURL}/comments/${id}`);
+  const response = await fetch(`${dbUrl.databaseURL}/comments/${id}`);
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
   const comment = await response.json();
   return comment;
-}
-const deleteComment = async (id) => {
-  return new Promise((resolve, reject) => {
-    fetch(`${clientCredentials.databaseURL}/comments/${id}`, {
-      method: 'DELETE',
-    })
-        .then((res) => (res.ok ? resolve(true) : reject(new Error('Failed to delete comment'))))
-        .catch(reject);
-    });
-  }
+};
+const deleteComment = async (id) => new Promise((resolve, reject) => {
+  fetch(`${dbUrl.databaseURL}/comments/${id}`, {
+    method: 'DELETE',
+  })
+    .then((res) => (res.ok ? resolve(true) : reject(new Error('Failed to delete comment'))))
+    .catch(reject);
+});
 
-  export {
-    getComments,
-    createComment,
-    updateComment,
-    getSingleComment,
-    deleteComment,
-  };
+export {
+  getComments, createComment, updateComment, getSingleComment, deleteComment,
+};

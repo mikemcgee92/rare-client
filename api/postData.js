@@ -3,7 +3,7 @@ const dbUrl = process.env.NEXT_PUBLIC_DATABASE_URL;
 // TODO: add auth tokens to calls
 
 const getPosts = async () => {
-  const get = await fetch(`${dbUrl}/posts`, {
+  const get = await fetch(`${dbUrl}posts`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

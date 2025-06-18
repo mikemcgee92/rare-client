@@ -1,4 +1,4 @@
-import clientCredentials from '../../clientCredentials.js';
+import clientCredentials from '../../clientCredentials';
 
 const getComments = async (postId) => {
   const response = await fetch(`${clientCredentials.databaseURL}/comments?postId=${postId}`);
@@ -7,7 +7,7 @@ const getComments = async (postId) => {
   }
   const comments = await response.json();
   return comments;
-}
+};
 
 const createComment = async (comment) => {
   const response = await fetch(`${clientCredentials.databaseURL}/comments`, {
@@ -24,7 +24,7 @@ const createComment = async (comment) => {
 
   const newComment = await response.json();
   return newComment;
-}
+};
 
 const updateComment = async (comment, id) => {
   const response = await fetch(`${clientCredentials.databaseURL}/comments/${id}`, {
@@ -41,7 +41,7 @@ const updateComment = async (comment, id) => {
 
   const updatedComment = await response.json();
   return updatedComment;
-}
+};
 
 const getSingleComment = async (id) => {
   const response = await fetch(`${clientCredentials.databaseURL}/comments/${id}`);
@@ -50,21 +50,15 @@ const getSingleComment = async (id) => {
   }
   const comment = await response.json();
   return comment;
-}
+};
 const deleteComment = async (id) => {
   return new Promise((resolve, reject) => {
     fetch(`${clientCredentials.databaseURL}/comments/${id}`, {
       method: 'DELETE',
     })
-        .then((res) => (res.ok ? resolve(true) : reject(new Error('Failed to delete comment'))))
-        .catch(reject);
-    });
-  }
+      .then((res) => (res.ok ? resolve(true) : reject(new Error('Failed to delete comment'))))
+      .catch(reject);
+  });
+};
 
-  export {
-    getComments,
-    createComment,
-    updateComment,
-    getSingleComment,
-    deleteComment,
-  };
+export { createComment, deleteComment, getComments, getSingleComment, updateComment };

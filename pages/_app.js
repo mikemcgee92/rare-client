@@ -8,15 +8,26 @@ import '../styles/globals.css';
 function MyApp({ Component, pageProps }) {
   const [token, setTokenState] = useState(null);
   const router = useRouter();
-
   useEffect(() => {
-    setTokenState(localStorage.getItem('auth_token', '') || '');
+    // Set token from localStorage, default to empty string if not found
+    const storedToken = localStorage.getItem('auth_token') || '';
+    setTokenState(storedToken);
   }, []);
 
   useEffect(() => {
-    if (!['/login', '/register'].includes(router.route) && token !== null) {
-      if (!token) {
+    // Only run routing logic if token state has been initialized
+    if (token !== null) {
+      const publicRoutes = ['/login', '/register'];
+      const isPublicRoute = publicRoutes.includes(router.route);
+
+      // If no token and trying to access protected route, redirect to login
+      if (!token && !isPublicRoute) {
         router.push('/login');
+      }
+
+      // If has token and on login/register, redirect to home
+      if (token && isPublicRoute) {
+        router.push('/');
       }
     }
   }, [router, token]);
@@ -27,9 +38,18 @@ function MyApp({ Component, pageProps }) {
   };
 
   const newPageProps = { ...pageProps, token, setToken };
-
   if (token === null) {
-    return 'Loading...';
+    return (
+      <div className="container-fluid min-vh-100 d-flex align-items-center justify-content-center">
+        <div className="text-center">
+          <div className="title-usa mb-3">🇺🇸 Rare Publishing</div>
+          <div className="subtitle-usa">
+            <span className="loading-spinner" />
+            Loading your experience...
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (

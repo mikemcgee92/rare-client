@@ -1,3 +1,4 @@
+import Icon from '@/components/Icon';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -8,45 +9,53 @@ import Logo from './rare.jpeg';
 function AppNavBar({ token, setToken }) {
   const navigate = useRouter();
 
+  const handleLogout = () => {
+    setToken('');
+    localStorage.removeItem('auth_token');
+    navigate.push('/login');
+  };
+
   return (
-    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+    <Navbar collapseOnSelect expand="lg" className="navbar">
       <Container>
-        <Link passHref href="/">
-          <Navbar.Brand>
-            <Image src={Logo} height="3rem" alt="Rare Logo" /> <h1 className="title is-4">Rare Publishing</h1>
-          </Navbar.Brand>
-        </Link>
+        <Navbar.Brand as={Link} href="/" className="d-flex align-items-center">
+          <Image src={Logo} height={40} width={40} alt="Rare Logo" className="me-2" />
+          <span className="navbar-brand">Rare Publishing</span>
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">
-            {token ? (
-              <Link passHref href="/">
-                <Nav.Link>Posts</Nav.Link>
-              </Link>
-            ) : (
-              ''
+            {token && (
+              <>
+                <Nav.Link as={Link} href="/">
+                  <Icon name="posts" size={16} className="me-1" /> Posts
+                </Nav.Link>
+                <Nav.Link as={Link} href="/posts">
+                  <Icon name="posts" size={16} className="me-1" /> All Posts
+                </Nav.Link>
+                <Nav.Link as={Link} href="/categories">
+                  <Icon name="categories" size={16} className="me-1" /> Categories
+                </Nav.Link>
+                <Nav.Link as={Link} href="/profile">
+                  <Icon name="profile" size={16} className="me-1" /> Profile
+                </Nav.Link>{' '}
+              </>
             )}
-
+          </Nav>
+          <Nav>
             {token ? (
-              <button
-                type="button"
-                className="button is-outlined"
-                onClick={() => {
-                  setToken('');
-                  navigate('/login');
-                }}
-              >
-                Logout
+              <button type="button" className="btn-logout" onClick={handleLogout}>
+                <Icon name="logout" size={16} className="me-1" /> Logout
               </button>
             ) : (
-              <>
-                <Link passHref href="/register">
-                  <Nav.Link>Register</Nav.Link>
-                </Link>
-                <Link passHref href="/login">
-                  <Nav.Link>Login</Nav.Link>
-                </Link>
-              </>
+              <div className="d-flex gap-2">
+                <Nav.Link as={Link} href="/login">
+                  <Icon name="login" size={16} className="me-1" /> Login
+                </Nav.Link>
+                <Nav.Link as={Link} href="/register">
+                  <Icon name="register" size={16} className="me-1" /> Register
+                </Nav.Link>
+              </div>
             )}
           </Nav>
         </Navbar.Collapse>

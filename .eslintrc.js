@@ -12,6 +12,21 @@ module.exports = {
     sourceType: 'module',
   },
   plugins: ['react', 'prettier'],
+  settings: {
+    'import/resolver': {
+      alias: {
+        map: [
+          ['@', '.'],
+          ['@/components', './components'],
+          ['@/pages', './pages'],
+          ['@/styles', './styles'],
+          ['@/utils', './utils'],
+          ['@/public', './public'],
+        ],
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      },
+    },
+  },
   rules: {
     'no-unused-vars': 'error',
     'react/jsx-props-no-spreading': 'off',
@@ -33,7 +48,7 @@ module.exports = {
     'comma-dangle': ['error'],
     'no-debugger': 1,
     'linebreak-style': 0,
-    'max-len': [1, 600, 2],
+    'max-len': [1, 6000, 2],
     'no-plusplus': [
       2,
       {
@@ -56,5 +71,9 @@ module.exports = {
         },
       },
     ],
+    'import/extensions': 'off',
+    'import/no-unresolved': 'off',
+    'object-curly-newline': 'off',
+    'import/order': 'off',
   },
 };

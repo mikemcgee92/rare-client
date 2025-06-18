@@ -1,5 +1,23 @@
 module.exports = {
   reactStrictMode: true,
-  // I don't want it to run when compiling as I trust the CI stage of the pipeline and Husky.
-  ignoreDuringBuilds: true,
+  // TypeScript and ESLint are handled by the CI pipeline and Husky
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  // Path aliases for cleaner imports
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': __dirname,
+      '@/components': __dirname + '/components',
+      '@/pages': __dirname + '/pages',
+      '@/styles': __dirname + '/styles',
+      '@/utils': __dirname + '/utils',
+      '@/public': __dirname + '/public',
+    };
+    return config;
+  },
 };

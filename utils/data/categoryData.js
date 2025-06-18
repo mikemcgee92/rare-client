@@ -1,4 +1,4 @@
-import clientCredentials from '../../clientCredentials.js';
+import clientCredentials from '../../clientCredentials';
 
 const getCategories = async () => {
   const response = await fetch(`${clientCredentials.databaseURL}/categories`);
@@ -7,7 +7,7 @@ const getCategories = async () => {
   }
   const categories = await response.json();
   return categories;
-}
+};
 
 const createCategory = async (category) => {
   const response = await fetch(`${clientCredentials.databaseURL}/categories`, {
@@ -24,7 +24,7 @@ const createCategory = async (category) => {
 
   const newCategory = await response.json();
   return newCategory;
-}
+};
 
 const updateCategory = async (category, id) => {
   const response = await fetch(`${clientCredentials.databaseURL}/categories/${id}`, {
@@ -41,7 +41,7 @@ const updateCategory = async (category, id) => {
 
   const updatedCategory = await response.json();
   return updatedCategory;
-}
+};
 
 const getSingleCategory = async (id) => {
   const response = await fetch(`${clientCredentials.databaseURL}/categories/${id}`);
@@ -50,7 +50,7 @@ const getSingleCategory = async (id) => {
   }
   const category = await response.json();
   return category;
-}
+};
 
 const deleteCategory = async (id) => {
   return new Promise((resolve, reject) => {
@@ -60,12 +60,6 @@ const deleteCategory = async (id) => {
       .then((res) => (res.ok ? resolve(true) : reject(new Error('Failed to delete category'))))
       .catch(reject);
   });
-}
-
-export {
-  getCategories,
-  createCategory,
-  updateCategory,
-  getSingleCategory,
-  deleteCategory,
 };
+
+export { createCategory, deleteCategory, getCategories, getSingleCategory, updateCategory };

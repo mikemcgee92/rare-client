@@ -1,67 +1,90 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { loginUser } from '../utils/data/AuthManager';
 
 function Login({ setToken }) {
-  const username = useRef();
-  const password = useRef();
   const navigate = useRouter();
-  const [isUnsuccessful, setisUnsuccessful] = useState(false);
+  const [formData, setFormData] = useState({ username: '', password: '' });
+  const [errors, setErrors] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-
-    const user = {
-      username: username.current.value,
-      password: password.current.value,
-    };
-
-    loginUser(user).then((res) => {
-      if ('valid' in res && res.valid) {
+    setErrors('');
+    if (!formData.username || !formData.password) {
+      setErrors('Both email and password are required.');
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await loginUser(formData);
+      if (res.valid) {
         setToken(res.token);
         navigate.push('/');
       } else {
-        setisUnsuccessful(true);
+        setErrors('Email or password not valid');
       }
-    });
+    } catch (err) {
+      setErrors('Unable to reach server. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
   };
-
   return (
-    <section className="columns is-centered">
-      <form className="column is-two-thirds" onSubmit={handleLogin}>
-        <h1 className="title">Rare Publishing</h1>
-        <p className="subtitle">Please sign in</p>
+    <div className="container-fluid min-vh-100 d-flex align-items-center justify-content-center py-5">
+      {' '}
+      <div className="auth-card login-card">
+        <form onSubmit={handleLogin}>
+          <div className="text-center mb-4">
+            <h1 className="title-usa">🇺🇸 Rare Publishing</h1>
+            <p className="subtitle-usa">Welcome back! Please sign in to continue</p>
+          </div>
 
-        <div className="field">
-          <label className="label">
-            Username <input className="input" type="text" ref={username} />
-          </label>
-        </div>
+          <div className="mb-4">
+            <label className="form-label" htmlFor="username">
+              📧 Email Address
+            </label>
+            <input id="username" name="username" className="form-control" type="email" value={formData.username} onChange={handleChange} autoComplete="email" placeholder="Enter your email address" required />
+          </div>
 
-        <div className="field">
-          <label className="label">
-            Password
-            <input className="input" type="password" ref={password} />
-          </label>
-        </div>
+          <div className="mb-4">
+            <label className="form-label" htmlFor="password">
+              🔒 Password
+            </label>
+            <input id="password" name="password" className="form-control" type="password" value={formData.password} onChange={handleChange} autoComplete="current-password" placeholder="Enter your password" required />
+          </div>
 
-        <div className="field is-grouped">
-          <div className="control">
-            <button className="button is-link" type="submit">
-              Submit
+          <div className="d-grid gap-3 mb-4">
+            <button className="btn-primary-usa" type="submit" disabled={loading}>
+              {loading && <span className="loading-spinner" />}
+              {loading ? 'Signing In...' : '🚀 Sign In'}
             </button>
           </div>
-          <div className="control">
-            <Link href="/register" className="btn btn-danger">
-              Cancel
-            </Link>
+
+          <div className="text-center">
+            <p className="mb-0">
+              Don&apos;t have an account?{' '}
+              <Link href="/register" className="btn-secondary-usa">
+                Create Account Here
+              </Link>
+            </p>
           </div>
-        </div>
-        {isUnsuccessful ? <p className="help is-danger">Username or password not valid</p> : ''}
-      </form>
-    </section>
+
+          {errors && (
+            <div className="alert-danger mt-3">
+              <strong>⚠️ Error:</strong> {errors}
+            </div>
+          )}
+        </form>
+      </div>
+    </div>
   );
 }
 

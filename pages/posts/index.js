@@ -14,6 +14,7 @@ function Home() {
 
   return (
     <article className="posts">
+      {console.warn(posts)}
       <h1>All Posts</h1>
       <Button onClick={() => { router.push('posts/new'); }}>
         Create a new post

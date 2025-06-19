@@ -51,10 +51,13 @@ const getSinglePost = async (id) => {
 
 const createPost = async (postObj) => {
   try {
-    const response = await makeAuthenticatedRequest(`${clientCredentials.databaseURL}/posts`, {
+    const url = `${clientCredentials.databaseURL}/posts`;
+
+    const response = await makeAuthenticatedRequest(url, {
       method: 'POST',
       body: JSON.stringify(postObj),
     });
+
     if (response.ok) {
       return await response.json();
     }
@@ -72,7 +75,13 @@ const updatePost = async (id, postObj) => {
       body: JSON.stringify(postObj),
     });
     if (response.ok) {
-      return await response.json();
+      // Django returns 204 No Content for successful updates, which has no body
+      if (response.status === 204) {
+        return { success: true };
+      }
+      // If there is a response body, parse it as JSON
+      const text = await response.text();
+      return text ? JSON.parse(text) : { success: true };
     }
     throw new Error('Failed to update post');
   } catch (error) {

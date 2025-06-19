@@ -102,7 +102,7 @@ function Home({ token }) {
                       </div>
                       <h4>Write Stories</h4>
                       <p>Share your unique voice and stories with our community of passionate writers</p>
-                      <Link href="/posts/create" className="btn-secondary-usa btn-sm mt-3">
+                      <Link href="/posts/new" className="btn-secondary-usa btn-sm mt-3">
                         Start Writing
                       </Link>
                     </div>
@@ -140,7 +140,7 @@ function Home({ token }) {
                       <Icon name="posts" size={20} className="me-2" />
                       View All Posts
                     </button>
-                    <button type="button" className="btn-secondary-usa" onClick={() => handleNavigation('/posts/create')}>
+                    <button type="button" className="btn-secondary-usa" onClick={() => handleNavigation('/posts/new')}>
                       <Icon name="write" size={20} className="me-2" />
                       Create New Post
                     </button>

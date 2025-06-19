@@ -83,7 +83,6 @@ function EditPost() {
     }
     return true;
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -96,6 +95,7 @@ function EditPost() {
       const postData = {
         ...formData,
         category_id: parseInt(formData.category_id, 10),
+        approved: true, // Keep posts approved for now
       };
 
       await updatePost(id, postData);

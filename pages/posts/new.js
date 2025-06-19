@@ -64,9 +64,9 @@ function NewPost() {
     }
     return true;
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+    e.stopPropagation();
 
     if (!validateForm()) return;
 
@@ -74,9 +74,19 @@ function NewPost() {
       setLoading(true);
       setError('');
 
+      // Get the auth token to extract user info or use a temporary user ID
+      // In a real app, you'd get the user ID from the authenticated user context
+      const authToken = localStorage.getItem('auth_token');
+      if (!authToken) {
+        setError('You must be logged in to create a post');
+        return;
+      }
+
       const postData = {
         ...formData,
         category_id: parseInt(formData.category_id, 10),
+        rare_user_id: 1, // TODO: Get actual user ID from auth context
+        approved: true, // Auto-approve posts for now
       };
 
       await createPost(postData);

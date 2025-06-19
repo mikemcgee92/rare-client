@@ -54,10 +54,8 @@ export default function Profile() {
       if (!user.first_name?.trim() || !user.last_name?.trim() || !user.email?.trim()) {
         setError('First name, last name, and email are required');
         return;
-      }
-
-      // Update user profile on server
-      const result = await updateCurrentUser({
+      } // Update user profile on server
+      await updateCurrentUser({
         first_name: user.first_name.trim(),
         last_name: user.last_name.trim(),
         email: user.email.trim(),

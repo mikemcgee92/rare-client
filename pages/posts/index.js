@@ -1,5 +1,6 @@
 import Icon from '@/components/Icon';
 import { getPosts } from '@/utils/data/postData';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Alert, Button, Col, Container, Row, Spinner } from 'react-bootstrap';
@@ -110,10 +111,13 @@ function PostsHome() {
                       flexDirection: 'column',
                     }}
                   >
+                    {' '}
                     {post.image_url && (
-                      <img
+                      <Image
                         src={post.image_url}
                         alt={post.title}
+                        width={400}
+                        height={200}
                         style={{
                           width: '100%',
                           height: '200px',
@@ -121,6 +125,7 @@ function PostsHome() {
                           borderRadius: '4px',
                           marginBottom: '1rem',
                         }}
+                        unoptimized
                       />
                     )}
                     <h5 style={{ marginBottom: '0.5rem' }}>{post.title}</h5>{' '}

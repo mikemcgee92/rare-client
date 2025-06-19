@@ -1,5 +1,28 @@
 import clientCredentials from '../../clientCredentials';
 
+// Get auth token from localStorage
+const getAuthToken = () => {
+  return localStorage.getItem('auth_token') || '';
+};
+
+// Helper function to make authenticated requests
+const makeAuthenticatedRequest = (url, options = {}) => {
+  const token = getAuthToken();
+  const headers = {
+    'Content-Type': 'application/json',
+    ...options.headers,
+  };
+
+  if (token) {
+    headers.Authorization = `Token ${token}`;
+  }
+
+  return fetch(url, {
+    ...options,
+    headers,
+  });
+};
+
 const getCategories = async () => {
   const response = await fetch(`${clientCredentials.databaseURL}/categories`);
   if (!response.ok) {
@@ -10,16 +33,14 @@ const getCategories = async () => {
 };
 
 const createCategory = async (category) => {
-  const response = await fetch(`${clientCredentials.databaseURL}/categories`, {
+  const response = await makeAuthenticatedRequest(`${clientCredentials.databaseURL}/categories`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     body: JSON.stringify(category),
   });
 
   if (!response.ok) {
-    throw new Error('Network response was not ok');
+    const errorData = await response.text();
+    throw new Error(`Network response was not ok: ${response.status} ${errorData}`);
   }
 
   const newCategory = await response.json();
@@ -27,16 +48,14 @@ const createCategory = async (category) => {
 };
 
 const updateCategory = async (category, id) => {
-  const response = await fetch(`${clientCredentials.databaseURL}/categories/${id}`, {
+  const response = await makeAuthenticatedRequest(`${clientCredentials.databaseURL}/categories/${id}`, {
     method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     body: JSON.stringify(category),
   });
 
   if (!response.ok) {
-    throw new Error('Network response was not ok');
+    const errorData = await response.text();
+    throw new Error(`Network response was not ok: ${response.status} ${errorData}`);
   }
 
   const updatedCategory = await response.json();
@@ -53,13 +72,16 @@ const getSingleCategory = async (id) => {
 };
 
 const deleteCategory = async (id) => {
-  return new Promise((resolve, reject) => {
-    fetch(`${clientCredentials.databaseURL}/categories/${id}`, {
-      method: 'DELETE',
-    })
-      .then((res) => (res.ok ? resolve(true) : reject(new Error('Failed to delete category'))))
-      .catch(reject);
+  const response = await makeAuthenticatedRequest(`${clientCredentials.databaseURL}/categories/${id}`, {
+    method: 'DELETE',
   });
+
+  if (!response.ok) {
+    const errorData = await response.text();
+    throw new Error(`Network response was not ok: ${response.status} ${errorData}`);
+  }
+
+  return true;
 };
 
 export { createCategory, deleteCategory, getCategories, getSingleCategory, updateCategory };

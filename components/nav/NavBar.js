@@ -4,14 +4,14 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import { Container, Nav, Navbar } from 'react-bootstrap';
+import { logoutUser } from '../../utils/data/AuthManager';
 import Logo from './rare.jpeg';
 
 function AppNavBar({ token, setToken }) {
   const navigate = useRouter();
-
   const handleLogout = () => {
+    logoutUser(); // This will clear both token and user data
     setToken('');
-    localStorage.removeItem('auth_token');
     navigate.push('/login');
   };
 

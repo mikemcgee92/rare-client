@@ -2,7 +2,7 @@ import Icon from '@/components/Icon';
 import { getCategories } from '@/utils/data/categoryData';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { Alert, Badge, Button, Card, Col, Container, Row, Spinner } from 'react-bootstrap';
+import { Alert, Button, Card, Col, Container, Row, Spinner } from 'react-bootstrap';
 
 export default function Categories() {
   const [categories, setCategories] = useState([]);
@@ -81,10 +81,9 @@ export default function Categories() {
                     <div className="d-flex align-items-center mb-3">
                       <div className="me-3">
                         <Icon name="categories" size={24} color="var(--usa-blue)" />
-                      </div>
+                      </div>{' '}
                       <div>
                         <h5 className="post-title mb-1">{category.label}</h5>
-                        <Badge bg="primary">{category.post_count || 0} posts</Badge>
                       </div>
                     </div>
                     <div className="mt-auto">

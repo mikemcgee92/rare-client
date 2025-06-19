@@ -1,7 +1,8 @@
 import Icon from '@/components/Icon';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { Button, Card, Col, Container, Form, Row } from 'react-bootstrap';
+import { Alert, Button, Card, Col, Container, Form, Row, Spinner } from 'react-bootstrap';
+import { fetchCurrentUser, getCurrentUser, updateCurrentUser } from '../utils/data/AuthManager';
 
 export default function Profile() {
   const [user, setUser] = useState({
@@ -11,28 +12,86 @@ export default function Profile() {
     bio: '',
   });
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const router = useRouter();
-
   useEffect(() => {
-    // In a real app, you'd fetch user data from an API
-    // For now, we'll use mock data
-    setUser({
-      first_name: 'John',
-      last_name: 'Doe',
-      email: 'john.doe@example.com',
-      bio: 'Passionate writer and technology enthusiast. Love sharing insights about web development and modern design trends.',
-    });
+    // Load user data from authentication context or fetch fresh data
+    const loadUserData = async () => {
+      try {
+        // First try to get from localStorage
+        let currentUser = getCurrentUser();
+
+        // If we have a user but want fresh data, or if no user data, fetch from server
+        if (!currentUser) {
+          currentUser = await fetchCurrentUser();
+        }
+
+        if (currentUser) {
+          setUser({
+            first_name: currentUser.first_name || '',
+            last_name: currentUser.last_name || '',
+            email: currentUser.email || '',
+            bio: currentUser.bio || '',
+          });
+        }
+      } catch (err) {
+        console.error('Error loading user data:', err);
+        setError('Failed to load profile data');
+      }
+    };
+
+    loadUserData();
   }, []);
+  const handleSave = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      setSuccess('');
 
-  const handleSave = () => {
-    // In a real app, you'd save to an API
-    setIsEditing(false);
-    // Show success message
+      // Validate required fields
+      if (!user.first_name?.trim() || !user.last_name?.trim() || !user.email?.trim()) {
+        setError('First name, last name, and email are required');
+        return;
+      }
+
+      // Update user profile on server
+      const result = await updateCurrentUser({
+        first_name: user.first_name.trim(),
+        last_name: user.last_name.trim(),
+        email: user.email.trim(),
+        bio: user.bio?.trim() || '',
+      });
+
+      setSuccess('Profile updated successfully!');
+      setIsEditing(false);
+
+      // Clear success message after 3 seconds
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      console.error('Error updating profile:', err);
+
+      if (err.message.includes('400')) {
+        setError('Invalid profile data. Please check your input and try again.');
+      } else if (err.message.includes('401')) {
+        setError('You are not logged in. Please log in and try again.');
+      } else if (err.message.includes('403')) {
+        setError('You are not authorized to update this profile.');
+      } else {
+        setError('Failed to update profile. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setUser((prev) => ({ ...prev, [name]: value }));
+
+    // Clear any previous messages when user starts typing
+    if (error) setError('');
+    if (success) setSuccess('');
   };
 
   return (
@@ -51,12 +110,22 @@ export default function Profile() {
             <Col xs="auto">
               {isEditing ? (
                 <div className="d-flex gap-2">
-                  <Button variant="outline-secondary" onClick={() => setIsEditing(false)}>
+                  {' '}
+                  <Button variant="outline-secondary" onClick={() => setIsEditing(false)} disabled={loading}>
                     Cancel
                   </Button>
-                  <Button className="btn-primary-usa" onClick={handleSave}>
-                    <Icon name="write" size={16} className="me-2" />
-                    Save Changes
+                  <Button className="btn-primary-usa" onClick={handleSave} disabled={loading}>
+                    {loading ? (
+                      <>
+                        <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" className="me-2" />
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <Icon name="write" size={16} className="me-2" />
+                        Save Changes
+                      </>
+                    )}
                   </Button>
                 </div>
               ) : (
@@ -94,9 +163,24 @@ export default function Profile() {
                     {user.first_name} {user.last_name}
                   </h3>
                   <p className="text-muted">{user.email}</p>
-                </div>
-
+                </div>{' '}
                 <Form>
+                  {/* Success Message */}
+                  {success && (
+                    <Alert variant="success" className="mb-4">
+                      <Icon name="featured" size={20} className="me-2" />
+                      {success}
+                    </Alert>
+                  )}
+
+                  {/* Error Message */}
+                  {error && (
+                    <Alert variant="danger" className="mb-4">
+                      <Icon name="alert" size={20} className="me-2" />
+                      {error}
+                    </Alert>
+                  )}
+
                   <Row>
                     <Col md={6}>
                       <Form.Group className="mb-3">

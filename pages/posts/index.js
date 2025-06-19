@@ -1,5 +1,4 @@
 import Icon from '@/components/Icon';
-import PostCard from '@/components/post/PostCard';
 import { getPosts } from '@/utils/data/postData';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -100,15 +99,64 @@ function PostsHome() {
             {posts.map((post) => (
               <Col key={`post--${post.id}`} lg={4} md={6} className="mb-4">
                 <div className="post-wrapper">
-                  <PostCard
-                    title={post.title}
-                    publicationDate={post.publication_date}
-                    imageUrl={post.image_url}
-                    content={post.content}
-                    author={post.rare_user?.first_name && post.rare_user?.last_name ? `${post.rare_user.first_name} ${post.rare_user.last_name}` : 'Anonymous'}
-                    category={post.category?.label || 'Uncategorized'}
-                    postId={post.id} // Pass postId to PostCard
-                  />
+                  <div
+                    className="post-card"
+                    style={{
+                      border: '1px solid #ddd',
+                      borderRadius: '8px',
+                      padding: '1rem',
+                      height: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                    }}
+                  >
+                    {post.image_url && (
+                      <img
+                        src={post.image_url}
+                        alt={post.title}
+                        style={{
+                          width: '100%',
+                          height: '200px',
+                          objectFit: 'cover',
+                          borderRadius: '4px',
+                          marginBottom: '1rem',
+                        }}
+                      />
+                    )}
+                    <h5 style={{ marginBottom: '0.5rem' }}>{post.title}</h5>{' '}
+                    <p
+                      style={{
+                        color: '#666',
+                        fontSize: '0.9rem',
+                        marginBottom: '0.5rem',
+                      }}
+                    >
+                      By {post.rare_user_id?.first_name && post.rare_user_id?.last_name ? `${post.rare_user_id.first_name} ${post.rare_user_id.last_name}` : 'Anonymous'}
+                      {post.category_id?.label && ` • ${post.category_id.label}`}
+                    </p>
+                    <p
+                      style={{
+                        color: '#888',
+                        fontSize: '0.8rem',
+                        marginBottom: '1rem',
+                      }}
+                    >
+                      {post.publication_date && new Date(post.publication_date).toLocaleDateString()}
+                    </p>
+                    <p
+                      style={{
+                        flex: 1,
+                        marginBottom: '1rem',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        display: '-webkit-box',
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: 'vertical',
+                      }}
+                    >
+                      {post.content}
+                    </p>
+                  </div>
                   <div className="post-actions mt-3 d-flex gap-2">
                     <Button variant="outline-primary" size="sm" onClick={() => handleViewPost(post.id)} className="flex-fill">
                       <Icon name="trending" size={16} className="me-1" />

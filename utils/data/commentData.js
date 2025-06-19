@@ -1,63 +1,105 @@
 import clientCredentials from '../../clientCredentials';
 
-const getComments = async (postId) => {
-  const response = await fetch(`${clientCredentials.databaseURL}/comments?post_id=${postId}`); // Ensure backend expects post_id
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
+// Get auth token from localStorage
+const getAuthToken = () => {
+  return localStorage.getItem('auth_token') || '';
+};
+
+// Helper function to make authenticated requests
+const makeAuthenticatedRequest = (url, options = {}) => {
+  const token = getAuthToken();
+  const headers = {
+    'Content-Type': 'application/json',
+    ...options.headers,
+  };
+
+  if (token) {
+    headers.Authorization = `Token ${token}`;
   }
-  const comments = await response.json();
-  return comments;
+
+  return fetch(url, {
+    ...options,
+    headers,
+  });
+};
+
+const getComments = async (postId) => {
+  try {
+    const response = await makeAuthenticatedRequest(`${clientCredentials.databaseURL}/comments?post_id=${postId}`);
+    if (response.ok) {
+      return await response.json();
+    }
+    throw new Error('Failed to fetch comments');
+  } catch (error) {
+    console.error('Error fetching comments:', error);
+    throw error;
+  }
 };
 
 const createComment = async (comment) => {
-  const response = await fetch(`${clientCredentials.databaseURL}/comments`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(comment),
-  });
+  try {
+    const response = await makeAuthenticatedRequest(`${clientCredentials.databaseURL}/comments`, {
+      method: 'POST',
+      body: JSON.stringify(comment),
+    });
 
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
+    if (response.ok) {
+      return await response.json();
+    }
+    throw new Error('Failed to create comment');
+  } catch (error) {
+    console.error('Error creating comment:', error);
+    throw error;
   }
-
-  const newComment = await response.json();
-  return newComment;
 };
 
 const updateComment = async (comment, id) => {
-  const response = await fetch(`${clientCredentials.databaseURL}/comments/${id}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(comment),
-  });
+  try {
+    const response = await makeAuthenticatedRequest(`${clientCredentials.databaseURL}/comments/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(comment),
+    });
 
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
+    if (response.ok) {
+      // Handle potential 204 No Content response
+      if (response.status === 204) {
+        return { success: true };
+      }
+      const text = await response.text();
+      return text ? JSON.parse(text) : { success: true };
+    }
+    throw new Error('Failed to update comment');
+  } catch (error) {
+    console.error('Error updating comment:', error);
+    throw error;
   }
-
-  const updatedComment = await response.json();
-  return updatedComment;
 };
 
 const getSingleComment = async (id) => {
-  const response = await fetch(`${clientCredentials.databaseURL}/comments/${id}`);
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
+  try {
+    const response = await makeAuthenticatedRequest(`${clientCredentials.databaseURL}/comments/${id}`);
+    if (response.ok) {
+      return await response.json();
+    }
+    throw new Error('Failed to fetch comment');
+  } catch (error) {
+    console.error('Error fetching comment:', error);
+    throw error;
   }
-  const comment = await response.json();
-  return comment;
 };
-const deleteComment = async (id) =>
-  new Promise((resolve, reject) => {
-    fetch(`${clientCredentials.databaseURL}/comments/${id}`, {
+const deleteComment = async (id) => {
+  try {
+    const response = await makeAuthenticatedRequest(`${clientCredentials.databaseURL}/comments/${id}`, {
       method: 'DELETE',
-    })
-      .then((res) => (res.ok ? resolve(true) : reject(new Error('Failed to delete comment'))))
-      .catch(reject);
-  });
+    });
+    if (response.ok) {
+      return true;
+    }
+    throw new Error('Failed to delete comment');
+  } catch (error) {
+    console.error('Error deleting comment:', error);
+    throw error;
+  }
+};
 
 export { createComment, deleteComment, getComments, getSingleComment, updateComment };

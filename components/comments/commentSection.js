@@ -4,9 +4,7 @@ import { createComment, getComments } from '../../utils/data/commentData';
 
 function CommentSection({ postId }) {
   const [comments, setComments] = useState([]);
-  const [newComment, setNewComment] = useState('');
-
-  // Fetch comments for the given postId
+  const [newComment, setNewComment] = useState(''); // Fetch comments for the given postId
   useEffect(() => {
     getComments(postId)
       .then(setComments)
@@ -14,16 +12,15 @@ function CommentSection({ postId }) {
         console.error('Error fetching comments:', error);
       });
   }, [postId]);
-
   // Handle submitting a new comment
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
     if (newComment.trim() === '') return;
 
     const commentData = {
-      post_id: postId, // Use post_id instead of postId
+      post_id: postId,
+      author_id: 1, // TODO: Get from authenticated user context
       content: newComment,
-      created_on: new Date().toISOString(),
     };
 
     try {
@@ -65,8 +62,7 @@ function CommentSection({ postId }) {
         >
           Submit
         </button>
-      </form>
-
+      </form>{' '}
       {/* Comments List */}
       <div>
         <h3>Comments</h3>
@@ -81,11 +77,9 @@ function CommentSection({ postId }) {
                 borderRadius: '5px',
               }}
             >
-              <p style={{ margin: 0, fontWeight: 'bold' }}>
-                {comment.author.first_name} {comment.author.last_name}
-              </p>
+              <p style={{ margin: 0, fontWeight: 'bold' }}>{comment.author ? `${comment.author.first_name} ${comment.author.last_name}` : 'Anonymous'}</p>
               <p style={{ margin: '5px 0' }}>{comment.content}</p>
-              <small style={{ color: '#888' }}>{new Date(comment.created_on).toLocaleString()}</small>
+              <small style={{ color: '#888' }}>{comment.created_on ? new Date(comment.created_on).toLocaleString() : 'Unknown date'}</small>
             </li>
           ))}
         </ul>

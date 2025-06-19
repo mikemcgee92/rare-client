@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useEffect, useState } from 'react';
 import { createComment, getComments } from '../../utils/data/commentData';
 
 function CommentSection({ postId }) {
@@ -21,7 +21,7 @@ function CommentSection({ postId }) {
     if (newComment.trim() === '') return;
 
     const commentData = {
-      postId,
+      post_id: postId, // Use post_id instead of postId
       content: newComment,
       created_on: new Date().toISOString(),
     };

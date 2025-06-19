@@ -100,7 +100,15 @@ function PostsHome() {
             {posts.map((post) => (
               <Col key={`post--${post.id}`} lg={4} md={6} className="mb-4">
                 <div className="post-wrapper">
-                  <PostCard title={post.title} publicationDate={post.publication_date} imageUrl={post.image_url} content={post.content} author={post.rare_user?.first_name && post.rare_user?.last_name ? `${post.rare_user.first_name} ${post.rare_user.last_name}` : 'Anonymous'} category={post.category?.label || 'Uncategorized'} />
+                  <PostCard
+                    title={post.title}
+                    publicationDate={post.publication_date}
+                    imageUrl={post.image_url}
+                    content={post.content}
+                    author={post.rare_user?.first_name && post.rare_user?.last_name ? `${post.rare_user.first_name} ${post.rare_user.last_name}` : 'Anonymous'}
+                    category={post.category?.label || 'Uncategorized'}
+                    postId={post.id} // Pass postId to PostCard
+                  />
                   <div className="post-actions mt-3 d-flex gap-2">
                     <Button variant="outline-primary" size="sm" onClick={() => handleViewPost(post.id)} className="flex-fill">
                       <Icon name="trending" size={16} className="me-1" />

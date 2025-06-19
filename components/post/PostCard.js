@@ -1,8 +1,9 @@
+import CommentSection from '@/components/comments/commentSection';
 import Icon from '@/components/Icon';
 import PropTypes from 'prop-types';
 import { Card } from 'react-bootstrap';
 
-function PostCard({ title, publicationDate, imageUrl, content, author, category }) {
+function PostCard({ title, publicationDate, imageUrl, content, author, category, postId }) {
   // Format the publication date
   const formatDate = (dateString) => {
     if (!dateString) return 'Unknown date';
@@ -59,6 +60,9 @@ function PostCard({ title, publicationDate, imageUrl, content, author, category 
           </small>
         </div>
       </Card.Body>
+
+      {/* Add CommentSection at the bottom */}
+      <CommentSection postId={postId} />
     </Card>
   );
 }
@@ -70,6 +74,7 @@ PostCard.propTypes = {
   content: PropTypes.string,
   author: PropTypes.string,
   category: PropTypes.string,
+  postId: PropTypes.number.isRequired,
 };
 
 PostCard.defaultProps = {

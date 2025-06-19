@@ -1,7 +1,7 @@
 import clientCredentials from '../../clientCredentials';
 
 const getComments = async (postId) => {
-  const response = await fetch(`${clientCredentials.databaseURL}/comments?postId=${postId}`);
+  const response = await fetch(`${clientCredentials.databaseURL}/comments?post_id=${postId}`); // Ensure backend expects post_id
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
@@ -51,14 +51,13 @@ const getSingleComment = async (id) => {
   const comment = await response.json();
   return comment;
 };
-const deleteComment = async (id) => {
-  return new Promise((resolve, reject) => {
+const deleteComment = async (id) =>
+  new Promise((resolve, reject) => {
     fetch(`${clientCredentials.databaseURL}/comments/${id}`, {
       method: 'DELETE',
     })
       .then((res) => (res.ok ? resolve(true) : reject(new Error('Failed to delete comment'))))
       .catch(reject);
   });
-};
 
 export { createComment, deleteComment, getComments, getSingleComment, updateComment };

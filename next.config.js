@@ -1,6 +1,21 @@
 module.exports = {
   reactStrictMode: true,
-  // TypeScript and ESLint are handled by the CI pipeline and Husky
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+      {
+        protocol: 'http',
+        hostname: '**',
+      },
+    ],
+    // Legacy domains configuration for backward compatibility
+    domains: ['example.com', 'images.unsplash.com', 'via.placeholder.com', 'picsum.photos', 'localhost'],
+    // Allow all external images (less secure but more flexible)
+    unoptimized: false,
+  },
   eslint: {
     ignoreDuringBuilds: true,
   },

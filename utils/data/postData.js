@@ -1,4 +1,4 @@
-const dbUrl = process.env.NEXT_PUBLIC_DATABASE_URL || 'http://localhost:8000';
+import clientCredentials from '../../clientCredentials';
 
 // Get auth token from localStorage
 const getAuthToken = () => {
@@ -25,7 +25,7 @@ const makeAuthenticatedRequest = (url, options = {}) => {
 
 const getPosts = async () => {
   try {
-    const response = await makeAuthenticatedRequest(`${dbUrl}/posts`);
+    const response = await makeAuthenticatedRequest(`${clientCredentials.databaseURL}/posts`);
     if (response.ok) {
       return await response.json();
     }
@@ -38,7 +38,7 @@ const getPosts = async () => {
 
 const getSinglePost = async (id) => {
   try {
-    const response = await makeAuthenticatedRequest(`${dbUrl}/posts/${id}`);
+    const response = await makeAuthenticatedRequest(`${clientCredentials.databaseURL}/posts/${id}`);
     if (response.ok) {
       return await response.json();
     }
@@ -51,7 +51,7 @@ const getSinglePost = async (id) => {
 
 const createPost = async (postObj) => {
   try {
-    const response = await makeAuthenticatedRequest(`${dbUrl}/posts`, {
+    const response = await makeAuthenticatedRequest(`${clientCredentials.databaseURL}/posts`, {
       method: 'POST',
       body: JSON.stringify(postObj),
     });
@@ -67,7 +67,7 @@ const createPost = async (postObj) => {
 
 const updatePost = async (id, postObj) => {
   try {
-    const response = await makeAuthenticatedRequest(`${dbUrl}/posts/${id}`, {
+    const response = await makeAuthenticatedRequest(`${clientCredentials.databaseURL}/posts/${id}`, {
       method: 'PUT',
       body: JSON.stringify(postObj),
     });
@@ -83,7 +83,7 @@ const updatePost = async (id, postObj) => {
 
 const deletePost = async (id) => {
   try {
-    const response = await makeAuthenticatedRequest(`${dbUrl}/posts/${id}`, {
+    const response = await makeAuthenticatedRequest(`${clientCredentials.databaseURL}/posts/${id}`, {
       method: 'DELETE',
     });
     if (response.ok) {

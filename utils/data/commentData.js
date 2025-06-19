@@ -1,17 +1,16 @@
-const dbUrl = process.env.NEXT_PUBLIC_DATABASE_URL;
 import clientCredentials from '../../clientCredentials';
 
 const getComments = async (postId) => {
-  const response = await fetch(`${dbUrl.databaseURL}/comments?postId=${postId}`);
+  const response = await fetch(`${clientCredentials.databaseURL}/comments?postId=${postId}`);
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
   const comments = await response.json();
   return comments;
-}
+};
 
 const createComment = async (comment) => {
-  const response = await fetch(`${dbUrl.databaseURL}/comments`, {
+  const response = await fetch(`${clientCredentials.databaseURL}/comments`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -28,7 +27,7 @@ const createComment = async (comment) => {
 };
 
 const updateComment = async (comment, id) => {
-  const response = await fetch(`${dbUrl.databaseURL}/comments/${id}`, {
+  const response = await fetch(`${clientCredentials.databaseURL}/comments/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -45,7 +44,7 @@ const updateComment = async (comment, id) => {
 };
 
 const getSingleComment = async (id) => {
-  const response = await fetch(`${dbUrl.databaseURL}/comments/${id}`);
+  const response = await fetch(`${clientCredentials.databaseURL}/comments/${id}`);
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
@@ -54,7 +53,7 @@ const getSingleComment = async (id) => {
 };
 const deleteComment = async (id) => {
   return new Promise((resolve, reject) => {
-    fetch(`${dbUrl.databaseURL}/comments/${id}`, {
+    fetch(`${clientCredentials.databaseURL}/comments/${id}`, {
       method: 'DELETE',
     })
       .then((res) => (res.ok ? resolve(true) : reject(new Error('Failed to delete comment'))))

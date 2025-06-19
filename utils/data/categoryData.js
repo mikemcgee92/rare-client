@@ -1,7 +1,7 @@
 import clientCredentials from '../../clientCredentials';
 
 const getCategories = async () => {
-  const response = await fetch(`${dbUrl.databaseURL}/categories`);
+  const response = await fetch(`${clientCredentials.databaseURL}/categories`);
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
@@ -10,7 +10,7 @@ const getCategories = async () => {
 };
 
 const createCategory = async (category) => {
-  const response = await fetch(`${dbUrl.databaseURL}/categories`, {
+  const response = await fetch(`${clientCredentials.databaseURL}/categories`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -27,7 +27,7 @@ const createCategory = async (category) => {
 };
 
 const updateCategory = async (category, id) => {
-  const response = await fetch(`${dbUrl.databaseURL}/categories/${id}`, {
+  const response = await fetch(`${clientCredentials.databaseURL}/categories/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -44,7 +44,7 @@ const updateCategory = async (category, id) => {
 };
 
 const getSingleCategory = async (id) => {
-  const response = await fetch(`${dbUrl.databaseURL}/categories/${id}`);
+  const response = await fetch(`${clientCredentials.databaseURL}/categories/${id}`);
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
@@ -60,12 +60,6 @@ const deleteCategory = async (id) => {
       .then((res) => (res.ok ? resolve(true) : reject(new Error('Failed to delete category'))))
       .catch(reject);
   });
-}
-
-export {
-  getCategories,
-  createCategory,
-  updateCategory,
-  getSingleCategory,
-  deleteCategory,
 };
+
+export { createCategory, deleteCategory, getCategories, getSingleCategory, updateCategory };

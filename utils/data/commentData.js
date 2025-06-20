@@ -1,9 +1,7 @@
 import clientCredentials from '../../clientCredentials';
 
 // Get auth token from localStorage
-const getAuthToken = () => {
-  return localStorage.getItem('auth_token') || '';
-};
+export const getAuthToken = () => localStorage.getItem('auth_token') || '';
 
 // Helper function to make authenticated requests
 const makeAuthenticatedRequest = (url, options = {}) => {

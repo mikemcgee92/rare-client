@@ -1,5 +1,5 @@
 import Icon from '@/components/Icon';
-import { getCategories } from '@/utils/data/categoryData';
+import { deleteCategory, getCategories, updateCategory } from '@/utils/data/categoryData';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Alert, Button, Card, Col, Container, Row, Spinner } from 'react-bootstrap';
@@ -26,6 +26,26 @@ export default function Categories() {
 
     fetchCategories();
   }, []);
+
+  const handleUpdateCategory = async (categoryId, newLabel) => {
+    if (newLabel.trim() === '') return;
+
+    try {
+      const updatedCategory = await updateCategory({ label: newLabel }, categoryId);
+      setCategories((prevCategories) => prevCategories.map((category) => (category.id === categoryId ? { ...category, label: updatedCategory.label } : category)));
+    } catch (updateError) {
+      console.error('Error updating category:', updateError);
+    }
+  };
+
+  const handleDeleteCategory = async (categoryId) => {
+    try {
+      await deleteCategory(categoryId);
+      setCategories((prevCategories) => prevCategories.filter((category) => category.id !== categoryId));
+    } catch (deleteError) {
+      console.error('Error deleting category:', deleteError);
+    }
+  };
 
   if (loading) {
     return (
@@ -90,6 +110,12 @@ export default function Categories() {
                       <Button variant="outline-primary" size="sm" onClick={() => router.push(`/posts?category=${category.id}`)}>
                         <Icon name="posts" size={14} className="me-1" />
                         View Posts
+                      </Button>
+                      <Button variant="outline-secondary" size="sm" onClick={() => handleUpdateCategory(category.id, prompt('Enter new label:', category.label))} className="flex-fill">
+                        Edit
+                      </Button>
+                      <Button variant="outline-danger" size="sm" onClick={() => handleDeleteCategory(category.id)} className="flex-fill">
+                        Delete
                       </Button>
                     </div>
                   </Card.Body>

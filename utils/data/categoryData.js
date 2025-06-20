@@ -1,27 +1,5 @@
 import clientCredentials from '../../clientCredentials';
-
-// Get auth token from localStorage
-const getAuthToken = () => {
-  return localStorage.getItem('auth_token') || '';
-};
-
-// Helper function to make authenticated requests
-const makeAuthenticatedRequest = (url, options = {}) => {
-  const token = getAuthToken();
-  const headers = {
-    'Content-Type': 'application/json',
-    ...options.headers,
-  };
-
-  if (token) {
-    headers.Authorization = `Token ${token}`;
-  }
-
-  return fetch(url, {
-    ...options,
-    headers,
-  });
-};
+import { getAuthToken } from './commentData'; // Import getAuthToken
 
 const getCategories = async () => {
   const response = await fetch(`${clientCredentials.databaseURL}/categories`);
@@ -33,14 +11,22 @@ const getCategories = async () => {
 };
 
 const createCategory = async (category) => {
-  const response = await makeAuthenticatedRequest(`${clientCredentials.databaseURL}/categories`, {
+  console.log('Creating category with payload:', category); // Log payload
+  const token = getAuthToken(); // Use getAuthToken
+  const response = await fetch(`${clientCredentials.databaseURL}/categories`, {
     method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Token ${token}`, // Include Authorization header
+    },
     body: JSON.stringify(category),
   });
 
+  console.log('Response status:', response.status); // Log response status
   if (!response.ok) {
-    const errorData = await response.text();
-    throw new Error(`Network response was not ok: ${response.status} ${errorData}`);
+    const errorDetails = await response.text();
+    console.error('Error details:', errorDetails); // Log error details
+    throw new Error('Network response was not ok');
   }
 
   const newCategory = await response.json();
@@ -48,14 +34,18 @@ const createCategory = async (category) => {
 };
 
 const updateCategory = async (category, id) => {
-  const response = await makeAuthenticatedRequest(`${clientCredentials.databaseURL}/categories/${id}`, {
+  const token = getAuthToken(); // Use getAuthToken
+  const response = await fetch(`${clientCredentials.databaseURL}/categories/${id}`, {
     method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Token ${token}`, // Include Authorization header
+    },
     body: JSON.stringify(category),
   });
 
   if (!response.ok) {
-    const errorData = await response.text();
-    throw new Error(`Network response was not ok: ${response.status} ${errorData}`);
+    throw new Error('Network response was not ok');
   }
 
   const updatedCategory = await response.json();
@@ -72,16 +62,24 @@ const getSingleCategory = async (id) => {
 };
 
 const deleteCategory = async (id) => {
-  const response = await makeAuthenticatedRequest(`${clientCredentials.databaseURL}/categories/${id}`, {
-    method: 'DELETE',
+  const token = getAuthToken(); // Use getAuthToken
+  return new Promise((resolve, reject) => {
+    fetch(`${clientCredentials.databaseURL}/categories/${id}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Token ${token}`, // Include Authorization header
+      },
+    })
+      .then((res) => (res.ok ? resolve(true) : reject(new Error('Failed to delete category'))))
+      .catch(reject);
   });
-
-  if (!response.ok) {
-    const errorData = await response.text();
-    throw new Error(`Network response was not ok: ${response.status} ${errorData}`);
-  }
-
-  return true;
 };
 
-export { createCategory, deleteCategory, getCategories, getSingleCategory, updateCategory };
+export {
+  getCategories,
+  getAuthToken,
+  getSingleCategory,
+  deleteCategory,
+  updateCategory,
+  createCategory,
+};

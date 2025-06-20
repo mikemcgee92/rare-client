@@ -23,9 +23,12 @@ const makeAuthenticatedRequest = (url, options = {}) => {
   });
 };
 
-const getPosts = async () => {
+const getPosts = async (queryParams = {}) => {
   try {
-    const response = await makeAuthenticatedRequest(`${clientCredentials.databaseURL}/posts`);
+    const queryString = new URLSearchParams(queryParams).toString();
+    const url = `${clientCredentials.databaseURL}/posts${queryString ? `?${queryString}` : ''}`;
+
+    const response = await makeAuthenticatedRequest(url);
     if (response.ok) {
       return await response.json();
     }

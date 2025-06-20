@@ -1,5 +1,6 @@
 import Icon from '@/components/Icon';
 import { getPosts } from '@/utils/data/postData';
+import { getCurrentUserId } from '@/utils/data/AuthManager';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -168,10 +169,13 @@ function PostsHome() {
                       <Icon name="trending" size={16} className="me-1" />
                       View
                     </Button>
-                    <Button variant="outline-secondary" size="sm" onClick={() => handleEditPost(post.id)} className="flex-fill">
-                      <Icon name="write" size={16} className="me-1" />
-                      Edit
-                    </Button>
+                    {console.warn('current user id:', getCurrentUserId(), ' post.rare_user_id:', post.rare_user_id.id)}
+                    {getCurrentUserId() === post.rare_user_id.id ? (
+                      <Button variant="outline-secondary" size="sm" onClick={() => handleEditPost(post.id)} className="flex-fill">
+                        <Icon name="write" size={16} className="me-1" />
+                        Edit
+                      </Button>
+                    ) : ''}
                   </div>
                 </div>
               </Col>

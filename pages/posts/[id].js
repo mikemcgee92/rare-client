@@ -1,6 +1,7 @@
 import CommentSection from '@/components/comments/commentSection';
 import Icon from '@/components/Icon';
 import { deletePost, getSinglePost } from '@/utils/data/postData';
+import { getCurrentUserId } from '@/utils/data/AuthManager';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -172,18 +173,20 @@ export default function ViewPost() {
                 </div>
               </Card.Body>
               {/* Post Actions */}
-              <Card.Footer className="bg-transparent border-0 p-4">
-                <div className="d-flex gap-3">
-                  <Button variant="primary" onClick={handleEdit} disabled={deleting}>
-                    <Icon name="write" size={16} className="me-2" />
-                    Edit Post
-                  </Button>
-                  <Button variant="outline-danger" onClick={() => setShowDeleteModal(true)} disabled={deleting}>
-                    <Icon name="alert" size={16} className="me-2" />
-                    Delete Post
-                  </Button>
-                </div>
-              </Card.Footer>{' '}
+              {getCurrentUserId() === post.rare_user_id.id ? (
+                <Card.Footer className="bg-transparent border-0 p-4">
+                  <div className="d-flex gap-3">
+                    <Button variant="primary" onClick={handleEdit} disabled={deleting}>
+                      <Icon name="write" size={16} className="me-2" />
+                      Edit Post
+                    </Button>
+                    <Button variant="outline-danger" onClick={() => setShowDeleteModal(true)} disabled={deleting}>
+                      <Icon name="alert" size={16} className="me-2" />
+                      Delete Post
+                    </Button>
+                  </div>
+                </Card.Footer>
+              ) : ''}
             </Card>
 
             {/* Comments Section */}

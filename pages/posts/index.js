@@ -15,7 +15,8 @@ function PostsHome() {
     const fetchPosts = async () => {
       try {
         setLoading(true);
-        const data = await getPosts();
+        const categoryId = router.query.category; // Get category ID from query params
+        const data = await getPosts(categoryId ? { categoryId } : {}); // Pass categoryId if available
         setPosts(data);
       } catch (err) {
         setError('Failed to load posts. Please try again.');
@@ -26,7 +27,7 @@ function PostsHome() {
     };
 
     fetchPosts();
-  }, []);
+  }, [router.query.category]); // Re-fetch posts when category changes
 
   const handleCreatePost = () => {
     router.push('/posts/new');
@@ -106,7 +107,7 @@ function PostsHome() {
                     imageUrl={post.image_url}
                     content={post.content}
                     author={post.rare_user?.first_name && post.rare_user?.last_name ? `${post.rare_user.first_name} ${post.rare_user.last_name}` : 'Anonymous'}
-                    category={post.category?.label || 'Uncategorized'}
+                    category={post.category_id?.label || 'Uncategorized'}
                     postId={post.id} // Pass postId to PostCard
                   />
                   <div className="post-actions mt-3 d-flex gap-2">

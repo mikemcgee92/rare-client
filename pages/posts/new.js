@@ -1,4 +1,5 @@
 import Icon from '@/components/Icon';
+import { getCurrentUserId } from '@/utils/data/AuthManager';
 import { getCategories } from '@/utils/data/categoryData';
 import { createPost } from '@/utils/data/postData';
 import { useRouter } from 'next/router';
@@ -72,12 +73,10 @@ function NewPost() {
 
     try {
       setLoading(true);
-      setError('');
+      setError(''); // Get the current user ID from authentication data
+      const currentUserId = getCurrentUserId();
 
-      // Get the auth token to extract user info or use a temporary user ID
-      // In a real app, you'd get the user ID from the authenticated user context
-      const authToken = localStorage.getItem('auth_token');
-      if (!authToken) {
+      if (!currentUserId) {
         setError('You must be logged in to create a post');
         return;
       }
@@ -85,7 +84,7 @@ function NewPost() {
       const postData = {
         ...formData,
         category_id: parseInt(formData.category_id, 10),
-        rare_user_id: 1, // TODO: Get actual user ID from auth context
+        rare_user_id: currentUserId, // Use the actual authenticated user ID
         approved: true, // Auto-approve posts for now
       };
 

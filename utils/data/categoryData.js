@@ -75,4 +75,11 @@ const deleteCategory = async (id) => {
   });
 };
 
-export { createCategory, deleteCategory, getCategories, getSingleCategory, updateCategory };
+export {
+  getCategories,
+  getAuthToken,
+  getSingleCategory,
+  deleteCategory,
+  updateCategory,
+  createCategory,
+};

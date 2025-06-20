@@ -2,16 +2,10 @@ import Icon from '@/components/Icon';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 function Home({ token }) {
   const router = useRouter();
-  const [userStats] = useState({
-    totalPosts: 0,
-    totalUsers: 1247,
-    totalCategories: 12,
-    activeWriters: 89,
-  });
 
   useEffect(() => {
     // If no token, redirect to login
@@ -53,42 +47,33 @@ function Home({ token }) {
                     Welcome to Rare Publishing
                   </h1>
                   <p className="subtitle-usa">Your premier platform for sharing stories, ideas, and connecting with fellow writers across America</p>
-                </div>
-                {/* Stats Cards */}
+                </div>{' '}
+                {/* Stats Cards - Simplified */}
                 <div className="row g-4 mb-5">
-                  <div className="col-lg-3 col-md-6">
+                  <div className="col-lg-4 col-md-6">
                     <div className="stats-card">
                       <div className="stats-icon">
                         <Icon name="users" size={40} color="var(--usa-blue)" />
                       </div>
-                      <div className="stats-number">{userStats.totalUsers.toLocaleString()}</div>
-                      <div className="stats-label">Total Writers</div>
+                      <div className="stats-number">Writers</div>
+                      <div className="stats-label">Community</div>
                     </div>
                   </div>
-                  <div className="col-lg-3 col-md-6">
-                    <div className="stats-card">
-                      <div className="stats-icon">
-                        <Icon name="activeUsers" size={40} color="var(--usa-red)" />
-                      </div>
-                      <div className="stats-number">{userStats.activeWriters}</div>
-                      <div className="stats-label">Active Today</div>
-                    </div>
-                  </div>
-                  <div className="col-lg-3 col-md-6">
+                  <div className="col-lg-4 col-md-6">
                     <div className="stats-card">
                       <div className="stats-icon">
                         <Icon name="posts" size={40} color="var(--usa-blue)" />
                       </div>
-                      <div className="stats-number">2,847</div>
-                      <div className="stats-label">Published Posts</div>
+                      <div className="stats-number">Stories</div>
+                      <div className="stats-label">Published</div>
                     </div>
                   </div>
-                  <div className="col-lg-3 col-md-6">
+                  <div className="col-lg-4 col-md-6">
                     <div className="stats-card">
                       <div className="stats-icon">
                         <Icon name="categories" size={40} color="var(--usa-red)" />
-                      </div>{' '}
-                      <div className="stats-number">{userStats.totalCategories}</div>
+                      </div>
+                      <div className="stats-number">Topics</div>
                       <div className="stats-label">Categories</div>
                     </div>
                   </div>
@@ -131,8 +116,7 @@ function Home({ token }) {
                       </Link>
                     </div>
                   </div>
-                </div>
-                {/* Action Buttons */}
+                </div>{' '}
                 <div className="text-center">
                   <div className="d-flex gap-3 justify-content-center flex-wrap">
                     {' '}
@@ -166,25 +150,34 @@ function Home({ token }) {
                 <h2 className="text-center mb-5 section-title">
                   <Icon name="trending" size={32} className="me-3" color="var(--usa-blue)" />
                   Quick Actions
-                </h2>
+                </h2>{' '}
                 <div className="row g-4">
                   {' '}
                   <div className="col-md-6 col-lg-3">
-                    <div className="quick-action-card" onClick={() => handleNavigation('/posts/trending')} onKeyDown={(e) => e.key === 'Enter' && handleNavigation('/posts/trending')} role="button" tabIndex={0}>
+                    <div className="quick-action-card" onClick={() => handleNavigation('/posts')} onKeyDown={(e) => e.key === 'Enter' && handleNavigation('/posts')} role="button" tabIndex={0}>
                       <div className="quick-icon">
-                        <Icon name="trending" size={32} color="var(--usa-red)" />
+                        <Icon name="posts" size={32} color="var(--usa-blue)" />
                       </div>
-                      <h5>Trending Posts</h5>
-                      <p>See what&apos;s popular right now</p>
+                      <h5>Browse Posts</h5>
+                      <p>Read stories from our community</p>
                     </div>
                   </div>
                   <div className="col-md-6 col-lg-3">
-                    <div className="quick-action-card" onClick={() => handleNavigation('/posts/recent')} onKeyDown={(e) => e.key === 'Enter' && handleNavigation('/posts/recent')} role="button" tabIndex={0}>
+                    <div className="quick-action-card" onClick={() => handleNavigation('/posts/new')} onKeyDown={(e) => e.key === 'Enter' && handleNavigation('/posts/new')} role="button" tabIndex={0}>
                       <div className="quick-icon">
-                        <Icon name="recent" size={32} color="var(--usa-blue)" />
+                        <Icon name="write" size={32} color="var(--usa-red)" />
                       </div>
-                      <h5>Latest Posts</h5>
-                      <p>Discover fresh content</p>
+                      <h5>Write Story</h5>
+                      <p>Share your thoughts and ideas</p>
+                    </div>
+                  </div>
+                  <div className="col-md-6 col-lg-3">
+                    <div className="quick-action-card" onClick={() => handleNavigation('/categories')} onKeyDown={(e) => e.key === 'Enter' && handleNavigation('/categories')} role="button" tabIndex={0}>
+                      <div className="quick-icon">
+                        <Icon name="categories" size={32} color="var(--usa-blue)" />
+                      </div>
+                      <h5>Categories</h5>
+                      <p>Explore topics and themes</p>
                     </div>
                   </div>
                   <div className="col-md-6 col-lg-3">
@@ -196,69 +189,11 @@ function Home({ token }) {
                       <p>Manage your account</p>
                     </div>
                   </div>
-                  <div className="col-md-6 col-lg-3">
-                    <div className="quick-action-card" onClick={() => handleNavigation('/settings')} onKeyDown={(e) => e.key === 'Enter' && handleNavigation('/settings')} role="button" tabIndex={0}>
-                      <div className="quick-icon">
-                        <Icon name="settings" size={32} color="var(--usa-blue)" />
-                      </div>
-                      <h5>Settings</h5>
-                      <p>Customize your experience</p>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Recent Activity Section - Full Width */}
-      <section className="activity-section">
-        <div className="container-fluid">
-          <div className="row justify-content-center">
-            <div className="col-lg-11 col-xl-10">
-              <div className="section-content">
-                {' '}
-                <h2 className="text-center mb-5 section-title">
-                  <Icon name="trending" size={32} className="me-3" color="var(--usa-blue)" />
-                  Platform Activity
-                </h2>
-                <div className="row g-4 text-center">
-                  <div className="col-md-4">
-                    <div className="activity-item">
-                      <div className="activity-icon">
-                        <Icon name="newPost" size={24} color="var(--usa-blue)" />
-                      </div>
-                      <h6>New Post Published</h6>
-                      <p className="text-muted small">&quot;The Future of American Literature&quot; by Sarah Johnson</p>
-                      <span className="badge bg-primary">2 minutes ago</span>
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="activity-item">
-                      <div className="activity-icon">
-                        <Icon name="newUser" size={24} color="var(--usa-red)" />
-                      </div>
-                      <h6>New Writer Joined</h6>
-                      <p className="text-muted small">Michael Chen from California just joined our community</p>
-                      <span className="badge bg-success">5 minutes ago</span>
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="activity-item">
-                      <div className="activity-icon">
-                        <Icon name="featured" size={24} color="var(--usa-blue)" />
-                      </div>
-                      <h6>Featured Post</h6>
-                      <p className="text-muted small">&quot;Stories from the Heartland&quot; is now featured</p>
-                      <span className="badge bg-warning">1 hour ago</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        </div>{' '}
       </section>
     </div>
   );

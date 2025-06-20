@@ -1,3 +1,4 @@
+import CommentSection from '@/components/comments/commentSection';
 import Icon from '@/components/Icon';
 import { deletePost, getSinglePost } from '@/utils/data/postData';
 import Image from 'next/image';
@@ -128,18 +129,20 @@ export default function ViewPost() {
               <Card.Header className="post-header bg-transparent border-0 p-4">
                 <div className="d-flex justify-content-between align-items-start mb-3">
                   <div>
+                    {' '}
                     <Badge bg="primary" className="mb-2">
                       <Icon name="categories" size={14} className="me-1" />
-                      {post.category?.label || 'Uncategorized'}
+                      {post.category_id?.label || 'Uncategorized'}
                     </Badge>
                     <h1 className="post-title mb-2">{post.title}</h1>
                   </div>
                 </div>
 
                 <div className="post-meta d-flex flex-wrap gap-3 text-muted">
+                  {' '}
                   <div className="d-flex align-items-center">
                     <Icon name="profile" size={16} className="me-1" />
-                    <small>By {post.rare_user?.first_name && post.rare_user?.last_name ? `${post.rare_user.first_name} ${post.rare_user.last_name}` : 'Anonymous'}</small>
+                    <small>By {post.rare_user_id?.first_name && post.rare_user_id?.last_name ? `${post.rare_user_id.first_name} ${post.rare_user_id.last_name}` : 'Anonymous'}</small>
                   </div>
                   <div className="d-flex align-items-center">
                     <Icon name="recent" size={16} className="me-1" />
@@ -180,15 +183,19 @@ export default function ViewPost() {
                     Delete Post
                   </Button>
                 </div>
-              </Card.Footer>
+              </Card.Footer>{' '}
             </Card>
 
-            {/* TODO: Comments section can be added here */}
+            {/* Comments Section */}
             <Card className="mt-4 shadow-sm">
-              <Card.Body className="text-center py-5">
-                <Icon name="connect" size={48} color="var(--usa-gray)" className="mb-3" />
-                <h5 className="text-muted">Comments Coming Soon</h5>
-                <p className="text-muted">We&apos;re working on adding a comments section to enable discussions around posts.</p>
+              <Card.Header className="bg-transparent border-0 p-4">
+                <h5 className="mb-0">
+                  <Icon name="connect" size={20} className="me-2" />
+                  Comments
+                </h5>
+              </Card.Header>
+              <Card.Body className="p-4">
+                <CommentSection postId={post.id} />
               </Card.Body>
             </Card>
           </Col>

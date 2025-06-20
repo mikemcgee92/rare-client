@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
+import { getCurrentUserId } from '../../utils/data/AuthManager';
 import { createComment, getComments } from '../../utils/data/commentData';
 
 function CommentSection({ postId }) {
@@ -12,14 +13,23 @@ function CommentSection({ postId }) {
         console.error('Error fetching comments:', error);
       });
   }, [postId]);
+
   // Handle submitting a new comment
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
     if (newComment.trim() === '') return;
 
+    // Get the current user ID from authentication data
+    const currentUserId = getCurrentUserId();
+
+    if (!currentUserId) {
+      console.error('User must be logged in to comment');
+      return;
+    }
+
     const commentData = {
       post_id: postId,
-      author_id: 1, // TODO: Get from authenticated user context
+      author_id: currentUserId, // Use the actual authenticated user ID
       content: newComment,
     };
 
